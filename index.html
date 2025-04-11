@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 12 Verb Tenses Quiz</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --correct: #2ecc71;
+            --wrong: #e74c3c;
+            --background: #f5f7fa;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .question-container {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .question {
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .option:hover {
+            background: #e8f4fc;
+            border-color: var(--primary);
+        }
+        .option.selected {
+            background: #d4edff;
+            border-color: var(--primary);
+        }
+        .option.correct-answer {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: var(--correct);
+        }
+        .option.wrong-answer {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: var(--wrong);
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .correct {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 5px solid var(--correct);
+            color: var(--correct);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .wrong {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 5px solid var(--wrong);
+            color: var(--wrong);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f8fe;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .next-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .next-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .score-container {
+            display: none;
+            animation: fadeIn 1s;
+        }
+        .score {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .percentage {
+            font-size: 2em;
+            color: var(--primary);
+        }
+        .restart-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>📝 12 Verb Tenses Quiz</h1>
+              
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div id="quiz-content">
+            <!-- Questions load here -->
+        </div>
+        
+        <div class="score-container" id="score-container">
+            <h2>Quiz Completed! 🎉</h2>
+            <div class="score">Your Score: <span id="score">0</span> / <span id="total">12</span></div>
+            <div class="percentage" id="percentage">0%</div>
+            <button class="restart-btn" id="restart-btn">Restart Quiz 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // All 12 Tenses Questions (Aligned with the Video)
+        const questions = [
+            // Present Tenses
+            {
+                question: "1. Which tense is used for general truths and habits?",
+                options: [
+                    "Present Continuous",
+                    "Simple Present",
+                    "Past Perfect",
+                    "Future Continuous"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Simple Present</strong> is used for general truths, habits, and fixed schedules.<br><br>📌 <em>Examples:</em><br>✔ She <strong>works</strong> at a bank.<br>✔ The sun <strong>rises</strong> in the east."
+            },
+            {
+                question: "2. Which sentence is in the <strong>Present Continuous</strong> tense?",
+                options: [
+                    "I eat breakfast every day.",
+                    "She is reading a book now.",
+                    "They had finished the project.",
+                    "We will travel next month."
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Present Continuous</strong> describes actions happening now.<br><br>📌 <em>Structure:</em> <strong>am/is/are + verb-ing</strong><br>✔ He <strong>is playing</strong> football.<br>✔ They <strong>are watching</strong> a movie."
+            },
+            {
+                question: "3. What is the correct <strong>Present Perfect</strong> form of: 'I (finish) my homework.'?",
+                options: [
+                    "finish",
+                    "finished",
+                    "have finished",
+                    "had finished"
+                ],
+                correct: 2,
+                explanation: "✅ <strong>Present Perfect</strong> (have/has + V3) shows actions with present relevance.<br><br>📌 <em>Examples:</em><br>✔ She <strong>has visited</strong> Paris.<br>✔ They <strong>have already left</strong>."
+            },
+            {
+                question: "4. Which tense is used for actions that started in the past and continue to now?",
+                options: [
+                    "Simple Past",
+                    "Present Perfect Continuous",
+                    "Future Perfect",
+                    "Past Continuous"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Present Perfect Continuous</strong> (have/has been + verb-ing) emphasizes duration.<br><br>📌 <em>Examples:</em><br>✔ I <strong>have been waiting</strong> for hours.<br>✔ She <strong>has been working</strong> since morning."
+            },
+            // Past Tenses
+            {
+                question: "5. What is the <strong>Simple Past</strong> of 'go'?",
+                options: [
+                    "gone",
+                    "went",
+                    "goed",
+                    "going"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Simple Past</strong> of 'go' is <strong>went</strong> (irregular verb).<br><br>📌 <em>Examples:</em><br>✔ She <strong>went</strong> to Spain.<br>✔ They <strong>ate</strong> pizza yesterday."
+            },
+            {
+                question: "6. 'They ____ (play) football when it rained.' Fill in the correct past tense.",
+                options: [
+                    "played",
+                    "were playing",
+                    "had played",
+                    "have played"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Past Continuous</strong> (was/were + verb-ing) describes interrupted actions.<br><br>📌 <em>Examples:</em><br>✔ I <strong>was cooking</strong> when the phone rang."
+            },
+            {
+                question: "7. Which tense is used in: 'She had finished her work before the meeting.'?",
+                options: [
+                    "Past Perfect",
+                    "Past Continuous",
+                    "Simple Past",
+                    "Present Perfect"
+                ],
+                correct: 0,
+                explanation: "✅ <strong>Past Perfect</strong> (had + V3) shows an action completed before another past action.<br><br>📌 <em>Examples:</em><br>✔ I <strong>had eaten</strong> before leaving."
+            },
+            {
+                question: "8. 'I ____ (wait) for 30 minutes when the bus arrived.' Which tense fits?",
+                options: [
+                    "had waited",
+                    "had been waiting",
+                    "was waiting",
+                    "have waited"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Past Perfect Continuous</strong> (had been + verb-ing) emphasizes duration.<br><br>📌 <em>Examples:</em><br>✔ They <strong>had been arguing</strong> before we intervened."
+            },
+            // Future Tenses
+            {
+                question: "9. Which tense is used for predictions and promises?",
+                options: [
+                    "Future Continuous",
+                    "Simple Future",
+                    "Future Perfect",
+                    "Present Continuous"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Simple Future</strong> (will + V1) is used for predictions/promises.<br><br>📌 <em>Examples:</em><br>✔ She <strong>will call</strong> you.<br>✔ It <strong>will rain</strong> tomorrow."
+            },
+            {
+                question: "10. 'At 8 PM tomorrow, I ____ (sleep).' Fill in the correct future tense.",
+                options: [
+                    "will sleep",
+                    "will be sleeping",
+                    "will have slept",
+                    "sleep"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Future Continuous</strong> (will be + verb-ing) describes ongoing future actions.<br><br>📌 <em>Examples:</em><br>✔ They <strong>will be traveling</strong> next week."
+            },
+            {
+                question: "11. 'By 2025, I ____ (work) here for 10 years.' Which tense fits?",
+                options: [
+                    "will work",
+                    "will have worked",
+                    "will be working",
+                    "worked"
+                ],
+                correct: 1,
+                explanation: "✅ <strong>Future Perfect</strong> (will have + V3) shows completion before a future time.<br><br>📌 <em>Examples:</em><br>✔ She <strong>will have finished</strong> by noon."
+            },
+            {
+                question: "12. 'By next year, I ____ (study) English for 5 years.' Which tense is correct?",
+                options: [
+                    "will study",
+                    "will have studied",
+                    "will be studying",
+                    "will have been studying"
+                ],
+                correct: 3,
+                explanation: "✅ <strong>Future Perfect Continuous</strong> (will have been + verb-ing) emphasizes duration.<br><br>📌 <em>Examples:</em><br>✔ He <strong>will have been working</strong> here for 20 years by 2030."
+            }
+        ];
+
+        // Quiz Logic
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        let answered = false;
+
+        const quizContent = document.getElementById("quiz-content");
+        const scoreContainer = document.getElementById("score-container");
+        const progressBar = document.getElementById("progress");
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+            quizContent.innerHTML = `
+                <div class="question-container">
+                    <div class="question">${q.question}</div>
+                    <div class="options" id="options">
+                        ${q.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})">${option}</div>
+                        `).join("")}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button class="next-btn" id="next-btn" disabled onclick="nextQuestion()">Next Question →</button>
+                </div>
+            `;
+
+            progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+            answered = false;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+
+            const options = document.querySelectorAll(".option");
+            options.forEach(opt => opt.classList.remove("selected"));
+            options[index].classList.add("selected");
+            selectedOption = index;
+            document.getElementById("next-btn").disabled = false;
+        }
+
+        function checkAnswer() {
+            if (selectedOption === null) return;
+
+            const options = document.querySelectorAll(".option");
+            const q = questions[currentQuestion];
+            const feedback = document.getElementById("feedback");
+
+            // Highlight correct and wrong answers
+            options.forEach((opt, idx) => {
+                if (idx === q.correct) {
+                    opt.classList.add("correct-answer");
+                } else if (idx === selectedOption && idx !== q.correct) {
+                    opt.classList.add("wrong-answer");
+                }
+            });
+
+            // Show feedback
+            if (selectedOption === q.correct) {
+                feedback.innerHTML = `<div class="correct">✅ Correct! ${q.explanation}</div>`;
+                score++;
+            } else {
+                feedback.innerHTML = `<div class="wrong">❌ Wrong! The correct answer is: <strong>${q.options[q.correct]}</strong>.<br>${q.explanation}</div>`;
+            }
+
+            feedback.style.display = "block";
+            answered = true;
+        }
+
+        function nextQuestion() {
+            if (!answered) {
+                checkAnswer();
+                return;
+            }
+
+            currentQuestion++;
+            loadQuestion();
+            selectedOption = null;
+        }
+
+        function showResults() {
+            quizContent.style.display = "none";
+            scoreContainer.style.display = "block";
+            document.getElementById("score").textContent = score;
+            document.getElementById("total").textContent = questions.length;
+            document.getElementById("percentage").textContent = `${Math.round((score / questions.length) * 100)}%`;
+            progressBar.style.width = "100%";
+        }
+
+        document.getElementById("restart-btn").addEventListener("click", () => {
+            currentQuestion = 0;
+            score = 0;
+            quizContent.style.display = "block";
+            scoreContainer.style.display = "none";
+            loadQuestion();
+        });
+
+        // Start the quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
